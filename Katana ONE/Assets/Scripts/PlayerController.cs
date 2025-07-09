@@ -15,6 +15,10 @@ public class PlayerController : MonoBehaviour
     [Header("Physics")]
     [SerializeField] private bool isGrounded; // todo
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip sprintSFX;
+    private bool sprintSFXCanPlay = true;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -32,7 +36,12 @@ public class PlayerController : MonoBehaviour
             Debug.Log("quickstop");
         }
         
-        if (inputDir.x == 0) {
+        if (rb.linearVelocityX == 0) {
+            sprintSFXCanPlay = true;
+        }
+        
+        if (inputDir.x == 0)
+        {
             isSprinting = false;
         }
 
@@ -44,6 +53,10 @@ public class PlayerController : MonoBehaviour
         if ((rb.linearVelocityX < 0 && inputDir.x < 0) || (rb.linearVelocityX > 0 && inputDir.x > 0)) {
             if (Mathf.Abs(rb.linearVelocityX) >= sprintActivationSpeed) {
                 SetLinearVelocity(sprintSpeed * inputDir.x);
+                if (sprintSFXCanPlay && !isSprinting) {
+                    AudioManager.Instance.PlaySoundClip(sprintSFX, transform.position);
+                    sprintSFXCanPlay = false;
+                }
                 isSprinting = true;
             } 
         }
