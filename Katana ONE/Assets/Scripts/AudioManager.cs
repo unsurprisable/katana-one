@@ -28,7 +28,7 @@ public class AudioManager : MonoBehaviour
         audioSource.Play();
 
         float clipLength = audioSource.clip.length;
-        Destroy(audioSource, clipLength);
+        Destroy(audioSource.gameObject, clipLength);
     }
     public void PlaySoundClip(AudioClip[] audioClipArray, Vector3 position, float volumeMultiplier = 1f)
     {
@@ -39,6 +39,6 @@ public class AudioManager : MonoBehaviour
         audioSource.Play();
 
         float clipLength = audioSource.clip.length;
-        Destroy(audioSource, clipLength);
+        Destroy(audioSource.gameObject, clipLength);
     }
 }

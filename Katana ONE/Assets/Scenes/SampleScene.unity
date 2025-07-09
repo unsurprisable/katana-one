@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 494161624}
   - component: {fileID: 494161623}
   - component: {fileID: 494161622}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: er
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -844,6 +844,11 @@ MonoBehaviour:
   sprintActivationSpeed: 3
   sprintSpeed: 10
   isSprinting: 0
+  physicalCollider: {fileID: 1169336115}
+  groundCheckCastLength: 0.1
+  groundCheckLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
   isGrounded: 0
   sprintSFX: {fileID: 8300000, guid: a7895d049100e1944bfcb14863fc2098, type: 3}
 --- !u!1001 &8294867464255801626

@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 inputDir;
 
     [Header("Physics")]
+    [SerializeField] private BoxCollider2D physicalCollider;
+    [SerializeField] private float groundCheckCastLength;
+    [SerializeField] private LayerMask groundCheckLayerMask;
     [SerializeField] private bool isGrounded; // todo
 
     [Header("Audio")]
@@ -27,42 +30,68 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-
-        inputDir = new Vector2(GameInput.Instance.GetHorizontalMovement(), GameInput.Instance.GetVerticalMovement());
+        CheckIsGrounded();
         
-        if (inputDir.x != 0 && ((rb.linearVelocityX < 0f && inputDir.x > 0f) || (rb.linearVelocityX > 0f && inputDir.x < 0f))) {
+        if (isGrounded) {
+            HandleGroundPlayerMovement();
+        } else {
+            HandleAirPlayerMovement();
+        }
+    }
+
+    private void CheckIsGrounded()
+    {
+        isGrounded = Physics2D.BoxCast(physicalCollider.transform.position, physicalCollider.bounds.size, 0f, Vector2.down, groundCheckCastLength, groundCheckLayerMask);
+    }
+
+    private void HandleGroundPlayerMovement()
+    {
+        inputDir = new Vector2(GameInput.Instance.GetHorizontalMovement(), GameInput.Instance.GetVerticalMovement());
+
+        if (inputDir.x != 0 && ((rb.linearVelocityX < 0f && inputDir.x > 0f) || (rb.linearVelocityX > 0f && inputDir.x < 0f)))
+        {
             SetLinearVelocity(0f);
             isSprinting = false;
             Debug.Log("quickstop");
         }
-        
-        if (rb.linearVelocityX == 0) {
+
+        if (rb.linearVelocityX == 0)
+        {
             sprintSFXCanPlay = true;
         }
-        
+
         if (inputDir.x == 0)
         {
             isSprinting = false;
         }
 
-        if (!isSprinting && inputDir.x != 0) {
+        if (!isSprinting && inputDir.x != 0)
+        {
             rb.AddForceX(walkForce * inputDir.x);
         }
 
         // if horz velocity direction matches input direction
-        if ((rb.linearVelocityX < 0 && inputDir.x < 0) || (rb.linearVelocityX > 0 && inputDir.x > 0)) {
-            if (Mathf.Abs(rb.linearVelocityX) >= sprintActivationSpeed) {
+        if ((rb.linearVelocityX < 0 && inputDir.x < 0) || (rb.linearVelocityX > 0 && inputDir.x > 0))
+        {
+            if (Mathf.Abs(rb.linearVelocityX) >= sprintActivationSpeed)
+            {
                 SetLinearVelocity(sprintSpeed * inputDir.x);
-                if (sprintSFXCanPlay && !isSprinting) {
+                if (sprintSFXCanPlay && !isSprinting)
+                {
                     AudioManager.Instance.PlaySoundClip(sprintSFX, transform.position);
                     sprintSFXCanPlay = false;
                 }
                 isSprinting = true;
-            } 
+            }
         }
     }
+    private void HandleAirPlayerMovement()
+    {
+        
+    }
 
-    private Vector2 SetLinearVelocity(float x) {
+    private Vector2 SetLinearVelocity(float x)
+    {
         rb.linearVelocity = new Vector2(x, rb.linearVelocityY);
         return rb.linearVelocity;
     }
